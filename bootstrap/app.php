@@ -16,10 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\SetLocale::class,
         ]);
-
         $middleware->alias([
             'auth.check' => \App\Http\Middleware\CheckAuth::class,
         ]);
+        $middleware->trustProxies(at: '*');
     })
     ->withSchedule(function (Schedule $schedule): void {
         // Clean up old document locks every minute
