@@ -7,11 +7,11 @@ ARG CACHEBUST=1
 WORKDIR /var/www/html
 
 # Disable frontend dialogs
-ENV DEBIAN_FRONTEND noninteractive
-ENV PHP_VERSION 8.4
-ENV ACCEPT_EULA Y
-ENV LANG en_US.UTF-8
-ENV LC_ALL en_US.UTF-8
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PHP_VERSION=8.4
+ENV ACCEPT_EULA=Y
+ENV LANG=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
 
 # Add ppa, curl and syslogd
 RUN apt-get update && apt-get install -y software-properties-common curl inetutils-syslogd \
@@ -82,5 +82,5 @@ COPY .env.prod /var/www/html/.env
 RUN chmod 755 /start.sh
 
 EXPOSE 80
-ENV PHP_BINARY /usr/bin/php
+ENV PHP_BINARY=/usr/bin/php
 CMD ["sh", "/start.sh"]
