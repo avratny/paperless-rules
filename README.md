@@ -205,3 +205,11 @@ docker compose up -d
 - If you see migration errors, wait a minute and check the logs again
 
 ---
+
+## License
+
+This project is open-source software licensed under the [MIT License](LICENSE).
+
+You are free to use, modify, and distribute this software. See the LICENSE file for full details.
+
+---
