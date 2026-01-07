@@ -82,5 +82,5 @@ COPY .env.prod /var/www/html/.env
 RUN chmod 755 /start.sh
 
 EXPOSE 80
-ENV PHP_BINARY=/usr/bin/php
+ENV PHP_BINARY /usr/bin/php
 CMD ["sh", "/start.sh"]
