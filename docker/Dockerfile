@@ -1,8 +1,6 @@
 FROM --platform=linux/amd64 ubuntu:22.04
 
-ARG NODE_VERSION=20
-ARG S6_OVERLAY_VERSION=3.1.6.2
-ARG CACHEBUST=1
+ARG NODE_VERSION=22
 
 WORKDIR /var/www/html
 
