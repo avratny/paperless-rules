@@ -80,6 +80,7 @@ services:
     ports:
       - '8080:80'  # Change 8080 to any port you prefer
     networks:
+      - paperless-rules-internal
       - paperless-rules
     depends_on:
       - mariadb
@@ -107,10 +108,11 @@ services:
     volumes:
       - 'paperless-rules-db:/var/lib/mysql'
     networks:
-      - paperless-rules
+      - paperless-rules-internal
     restart: unless-stopped
 
 networks:
+  paperless-rules-internal:
   paperless-rules:
     driver: bridge
 
