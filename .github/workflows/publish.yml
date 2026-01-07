@@ -1,0 +1,81 @@
+name: Build & publish to ghcr.io
+
+on:
+  push:
+    branches: [main]
+    tags:
+      - 'v*.*.*'
+
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: avratny/paperless-rules
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          tools: composer:v2
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: 🔨 Build Project
+        run: |
+          npm install
+          npm run build
+
+      - name: Build image
+        run: |
+          # Generate a short random string
+          BUILD_NUMBER=$(openssl rand -hex 4)  # 8 chars
+          docker build . --file docker/Dockerfile --tag $IMAGE_NAME --build-arg BUILD_NUMBER=$BUILD_NUMBER
+
+      - name: Log into registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Push image
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "main" ] && VERSION=latest
+
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+
+          # Push the version tag
+          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
+
+          # If this is a git tag (release), also push as latest
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            echo "Pushing as latest tag as well..."
+            docker tag $IMAGE_NAME $IMAGE_ID:latest
+            docker push $IMAGE_ID:latest
+          fi
