@@ -1,6 +1,5 @@
 # Environment & Configuration
 .env
-.env.*
 !.env.example
 .phpactor.json
 auth.json
