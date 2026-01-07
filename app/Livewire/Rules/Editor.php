@@ -5,6 +5,7 @@ namespace App\Livewire\Rules;
 use App\Models\Rule;
 use App\Services\Rules\DslParser;
 use App\Services\Rules\DslParseException;
+use App\Services\SettingsService;
 use Livewire\Component;
 use Livewire\Attributes\Validate;
 
@@ -39,9 +40,12 @@ class Editor extends Component
     public $testRunning = false;
     public $testResult = null;
     public $testError = null;
+    public $paperlessUrl = '';
 
-    public function mount()
+    public function mount(SettingsService $settingsService)
     {
+        $this->paperlessUrl = rtrim($settingsService->getPaperlessUrl(), '/');
+
         $ruleId = request()->query('rule');
 
         if ($ruleId) {

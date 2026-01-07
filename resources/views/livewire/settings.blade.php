@@ -76,6 +76,26 @@
                     </div>
                 </a>
 
+                <!-- DSL Settings Card -->
+                <a href="{{ route('settings.dsl') }}" class="group block bg-gradient-to-br from-gray-900/50 to-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-800/50 shadow-xl overflow-hidden hover:border-orange-500/50 transition-all duration-300 hover:shadow-orange-500/10 cursor-pointer">
+                    <div class="p-8">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center mr-4 p-2 group-hover:scale-110 transition-transform duration-300">
+                                <svg class="w-full h-full text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-xl font-semibold text-white group-hover:text-orange-400 transition-colors">{{ __('DSL Settings') }}</h3>
+                            </div>
+                            <svg class="w-6 h-6 text-gray-400 group-hover:text-orange-400 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </div>
+                        <p class="text-sm text-gray-400">{{ __('Configure rule execution limits and DSL parser settings') }}</p>
+                    </div>
+                </a>
+
                 <!-- Authentication Settings Card -->
                 <a href="{{ route('settings.authentication') }}" class="group block bg-gradient-to-br from-gray-900/50 to-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-800/50 shadow-xl overflow-hidden hover:border-green-500/50 transition-all duration-300 hover:shadow-green-500/10 cursor-pointer">
                     <div class="p-8">
@@ -98,18 +118,27 @@
 
             </div>
 
-            <!-- Info Box -->
-            <div class="mt-6 bg-blue-500/10 border border-blue-500/20 rounded-2xl p-6 backdrop-blur-sm">
-                <div class="flex items-start">
-                    <svg class="w-6 h-6 text-blue-400 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <div class="flex-1">
-                        <h4 class="text-blue-400 font-semibold mb-2">{{ __('About Settings') }}</h4>
-                        <p class="text-blue-400/70 text-sm leading-relaxed">
-                            {{ __('Settings are stored in the database and take precedence over environment variables. This allows you to change configuration without editing the .env file.') }}
-                        </p>
+            <!-- Setup Wizard Info Box -->
+            <div class="mt-6 bg-indigo-500/10 border border-indigo-500/20 rounded-2xl p-6 backdrop-blur-sm">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-start flex-1">
+                        <svg class="w-6 h-6 text-indigo-400 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <div class="flex-1">
+                            <h4 class="text-indigo-400 font-semibold mb-2">{{ __('Setup Wizard') }}</h4>
+                            <p class="text-indigo-400/70 text-sm leading-relaxed">
+                                {{ __('Need to reconfigure your initial settings? Run the setup wizard again to update your Paperless connection, document processing mode, and authentication settings.') }}
+                            </p>
+                        </div>
                     </div>
+                    <button
+                        wire:click="restartSetupWizard"
+                        class="ml-4 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 whitespace-nowrap"
+                    >
+                        {{ __('Run Setup Wizard') }}
+                    </button>
                 </div>
             </div>
         </div>

@@ -111,7 +111,7 @@
 
             <!-- Quick Links -->
             <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <a href="https://docs.paperless-rules.example.com" target="_blank" class="bg-gray-900/50 border border-gray-800/50 overflow-hidden shadow-xl rounded-2xl backdrop-blur-sm hover:border-indigo-500/50 transition duration-300 group">
+                <a href="{{ url('/docs') }}" class="bg-gray-900/50 border border-gray-800/50 overflow-hidden shadow-xl rounded-2xl backdrop-blur-sm hover:border-indigo-500/50 transition duration-300 group">
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center">
@@ -132,7 +132,7 @@
                     </div>
                 </a>
 
-                <a href="https://github.com/paperless-rules/paperless-rules" target="_blank" class="bg-gray-900/50 border border-gray-800/50 overflow-hidden shadow-xl rounded-2xl backdrop-blur-sm hover:border-purple-500/50 transition duration-300 group">
+                <a href="https://github.com/avratny/paperless-rules" target="_blank" class="bg-gray-900/50 border border-gray-800/50 overflow-hidden shadow-xl rounded-2xl backdrop-blur-sm hover:border-purple-500/50 transition duration-300 group">
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center">

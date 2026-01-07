@@ -3,16 +3,19 @@
 namespace App\Services\Rules;
 
 use App\Services\Paperless\Document;
+use App\Services\SettingsService;
 
 class RuleService
 {
     private DslParser $parser;
     private RuleExecutor $executor;
+    private SettingsService $settingsService;
 
-    public function __construct()
+    public function __construct(?SettingsService $settingsService = null)
     {
         $this->parser = new DslParser();
-        $this->executor = new RuleExecutor();
+        $this->executor = new RuleExecutor($settingsService);
+        $this->settingsService = $settingsService ?? app(SettingsService::class);
     }
 
     /**
@@ -21,7 +24,7 @@ class RuleService
     public function parse(string $dsl): array
     {
         // Check DSL length limit
-        $maxLength = config('prules.limits.max_dsl_length', 10000);
+        $maxLength = $this->settingsService->getMaxDslLength();
         if (strlen($dsl) > $maxLength) {
             throw new \Exception("DSL too long: " . strlen($dsl) . " characters (max: {$maxLength})");
         }

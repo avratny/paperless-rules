@@ -1,11 +1,17 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "avratny/paperless-rules",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "An advanced rule engine for Paperless-NGX that brings intelligent automation to your document management workflow.",
     "keywords": [
-        "laravel",
-        "framework"
+        "paperless",
+        "paperless-ngx",
+        "document-management",
+        "automation",
+        "rules-engine",
+        "dsl",
+        "ai",
+        "ollama"
     ],
     "license": "MIT",
     "require": {
@@ -16,6 +22,7 @@
         "league/commonmark": "^2.8",
         "livewire/livewire": "^3.7",
         "symfony/expression-language": "^8.0",
+        "symfony/yaml": "^7.0",
         "wireui/wireui": "^2.5"
     },
     "require-dev": {

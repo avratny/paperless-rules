@@ -55,16 +55,16 @@ class ExpressionEngine
             fn($arguments, $haystack, $needle) => is_string($haystack) && str_contains($haystack, $needle)
         ));
 
-        // Custom startsWith function
+        // Custom str_starts_with function
         $this->expressionLanguage->addFunction(new ExpressionFunction(
-            'startsWith',
+            'str_starts_with',
             fn($haystack, $needle) => sprintf('str_starts_with(%s, %s)', $haystack, $needle),
             fn($arguments, $haystack, $needle) => str_starts_with($haystack, $needle)
         ));
 
-        // Custom endsWith function
+        // Custom str_ends_with function
         $this->expressionLanguage->addFunction(new ExpressionFunction(
-            'endsWith',
+            'str_ends_with',
             fn($haystack, $needle) => sprintf('str_ends_with(%s, %s)', $haystack, $needle),
             fn($arguments, $haystack, $needle) => str_ends_with($haystack, $needle)
         ));

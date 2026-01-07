@@ -146,7 +146,7 @@
                         @endif
 
                         <!-- Save Button -->
-                        <div class="flex justify-end">
+                        <div class="flex justify-start">
                             <button
                                 type="button"
                                 wire:click="save"

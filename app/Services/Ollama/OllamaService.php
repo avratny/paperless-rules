@@ -132,5 +132,55 @@ class OllamaService
         return '';
     }
 
+    /**
+     * Get all available models from Ollama
+     *
+     * @return array Array of model names
+     */
+    public function getAvailableModels(): array
+    {
+        try {
+            // Create Ollama client with configured URL
+            $client = Ollama::client($this->url);
+
+            // Get list of models
+            $response = $client->models()->list();
+
+            // Extract model names from response
+            $models = [];
+            foreach ($response->models as $model) {
+                $models[] = $model->name;
+            }
+
+            return $models;
+        } catch (\Exception $e) {
+            // Log error and return empty array
+            \Log::error('Ollama API error while fetching models: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Test connection to Ollama server
+     *
+     * @return bool True if connection is successful
+     */
+    public function testConnection(): bool
+    {
+        try {
+            // Create Ollama client with configured URL
+            $client = Ollama::client($this->url);
+
+            // Try to list models as a simple connection test
+            $client->models()->list();
+
+            return true;
+        } catch (\Exception $e) {
+            // Log error and return false
+            \Log::error('Ollama connection test failed: ' . $e->getMessage());
+            return false;
+        }
+    }
+
 
 }

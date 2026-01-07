@@ -5,6 +5,7 @@ namespace App\Livewire\Rules;
 use App\Models\Rule;
 use App\Services\Paperless\PaperlessService;
 use App\Services\Rules\RuleService;
+use App\Services\SettingsService;
 use Livewire\Component;
 
 class ManualProcess extends Component
@@ -17,11 +18,17 @@ class ManualProcess extends Component
     public $results = [];
     public $error = null;
     public $success = null;
+    public $paperlessUrl = '';
 
     protected $rules = [
         'documentId' => 'required|integer|min:1',
         'selectedRules' => 'required|array|min:1',
     ];
+
+    public function mount(SettingsService $settingsService): void
+    {
+        $this->paperlessUrl = rtrim($settingsService->getPaperlessUrl(), '/');
+    }
 
     protected function messages()
     {

@@ -46,17 +46,20 @@
             @endif
 
             <!-- Authentication Settings -->
-            <div class="bg-gray-900/50 backdrop-blur-xl border border-gray-800/50 rounded-2xl shadow-xl overflow-hidden">
-                <div class="px-6 py-5 border-b border-gray-800/50">
-                    <div class="flex items-center">
-                        <svg class="w-6 h-6 text-indigo-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
-                        <h3 class="text-xl font-semibold text-white">{{ __('Login Settings') }}</h3>
+            <div class="bg-gray-900/50 border border-gray-800/50 overflow-hidden shadow-xl rounded-2xl backdrop-blur-sm">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center mr-3 p-2">
+                            <svg class="w-full h-full text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-white">{{ __('Login Settings') }}</h3>
+                            <p class="text-sm text-gray-400 mt-1">{{ __('Manage users and authentication settings') }}</p>
+                        </div>
                     </div>
-                </div>
 
-                <div class="p-6">
                     <div class="space-y-6">
                         <!-- Enable Login Toggle -->
                         <div class="flex items-center justify-between p-4 bg-gray-800/30 rounded-lg">

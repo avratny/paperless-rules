@@ -131,9 +131,9 @@
                                 placeholder="{{ __('Enter document ID') }}"
                                 class="flex-1 px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
                             >
-                            @if($testDocumentId)
+                            @if($testDocumentId && $paperlessUrl)
                                 <a
-                                    href="{{ config('prules.paperless.url') }}/documents/{{ $testDocumentId }}/details"
+                                    href="{{ $paperlessUrl }}/documents/{{ $testDocumentId }}/details"
                                     target="_blank"
                                     class="px-4 py-2 bg-gray-800/50 hover:bg-gray-700 border border-gray-700 rounded-lg text-gray-300 hover:text-white transition duration-150 flex items-center gap-2"
                                     title="{{ __('Open in Paperless') }}"

@@ -45,9 +45,9 @@
                                     placeholder="{{ __('e.g. 123') }}"
                                 />
                             </div>
-                            @if($documentId)
+                            @if($documentId && $paperlessUrl)
                                 <a
-                                    href="{{ config('prules.paperless.url') }}/documents/{{ $documentId }}/details"
+                                    href="{{ $paperlessUrl }}/documents/{{ $documentId }}/details"
                                     target="_blank"
                                     class="px-4 py-2 bg-gray-800/50 hover:bg-gray-700 border border-gray-700 rounded-lg text-gray-300 hover:text-white transition duration-150 flex items-center gap-2 h-fit mt-8"
                                     title="{{ __('Open in Paperless') }}"

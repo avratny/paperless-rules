@@ -8,6 +8,23 @@ class DslParser
     private int $currentLine = 0;
     private array $errors = [];
 
+    // Valid function names that can be used in expressions
+    private const VALID_FUNCTIONS = [
+        'lower', 'upper', 'trim', 'len',
+        'str_contains', 'str_starts_with', 'str_ends_with',
+        'replace', 'regex',
+        'in', 'count',
+        'askOllamaAi', 'askOllamaAiForCreationDate', 'askOllamaAiForDocumentNumber',
+        'reformatDate'
+    ];
+
+    // Valid action names that can be used in DO statements
+    private const VALID_ACTIONS = [
+        'addTag', 'removeTag',
+        'setDocumentType', 'setCorrespondent', 'setCustomField', 'setTitle',
+        'createTag', 'createDocumentType', 'createCorrespondent'
+    ];
+
     public function parse(string $dsl): array
     {
         $this->lines = $this->prepareLines($dsl);
@@ -60,8 +77,13 @@ class DslParser
 
     private function parseConditionalRule(string $condition): array
     {
+        $condition = trim($condition);
+
+        // Validate the condition expression
+        $this->validateExpression($condition);
+
         $ast = [
-            'when' => trim($condition),
+            'when' => $condition,
             'then' => [],
             'else' => []
         ];
@@ -110,10 +132,15 @@ class DslParser
 
             // Parse LET
             if (preg_match('/^LET\s+([A-Za-z_]\w*)\s*=\s*(.+)$/i', $line, $matches)) {
+                $expr = trim($matches[2]);
+
+                // Validate the expression
+                $this->validateExpression($expr);
+
                 $ast['then'][] = [
                     'type' => 'let',
                     'name' => $matches[1],
-                    'expr' => trim($matches[2])
+                    'expr' => $expr
                 ];
                 $this->advance();
                 continue;
@@ -121,9 +148,20 @@ class DslParser
 
             // Parse DO
             if (preg_match('/^DO\s+([A-Za-z_]\w*)\s*\((.*)\)$/i', $line, $matches)) {
+                $actionName = $matches[1];
+
+                // Validate action name
+                if (!in_array($actionName, self::VALID_ACTIONS)) {
+                    throw new \Exception(__('Line :line: Unknown action ":action". Valid actions are: :valid', [
+                        'line' => $this->currentLineNumber(),
+                        'action' => $actionName,
+                        'valid' => implode(', ', self::VALID_ACTIONS)
+                    ]));
+                }
+
                 $ast['then'][] = [
                     'type' => 'do',
-                    'action' => $matches[1],
+                    'action' => $actionName,
                     'args' => $this->parseArgs(trim($matches[2]))
                 ];
                 $this->advance();
@@ -160,10 +198,15 @@ class DslParser
 
             // Parse LET
             if (preg_match('/^LET\s+([A-Za-z_]\w*)\s*=\s*(.+)$/i', $line, $matches)) {
+                $expr = trim($matches[2]);
+
+                // Validate the expression
+                $this->validateExpression($expr);
+
                 $statements[] = [
                     'type' => 'let',
                     'name' => $matches[1],
-                    'expr' => trim($matches[2])
+                    'expr' => $expr
                 ];
                 $this->advance();
                 continue;
@@ -171,9 +214,20 @@ class DslParser
 
             // Parse DO
             if (preg_match('/^DO\s+([A-Za-z_]\w*)\s*\((.*)\)$/i', $line, $matches)) {
+                $actionName = $matches[1];
+
+                // Validate action name
+                if (!in_array($actionName, self::VALID_ACTIONS)) {
+                    throw new \Exception(__('Line :line: Unknown action ":action". Valid actions are: :valid', [
+                        'line' => $this->currentLineNumber(),
+                        'action' => $actionName,
+                        'valid' => implode(', ', self::VALID_ACTIONS)
+                    ]));
+                }
+
                 $statements[] = [
                     'type' => 'do',
-                    'action' => $matches[1],
+                    'action' => $actionName,
                     'args' => $this->parseArgs(trim($matches[2]))
                 ];
                 $this->advance();
@@ -188,9 +242,14 @@ class DslParser
 
     private function parseNestedWhen(string $condition): array
     {
+        $condition = trim($condition);
+
+        // Validate the condition expression
+        $this->validateExpression($condition);
+
         $nested = [
             'type' => 'when',
-            'when' => trim($condition),
+            'when' => $condition,
             'then' => [],
             'else' => []
         ];
@@ -364,5 +423,28 @@ class DslParser
     private function advance(): void
     {
         $this->currentLine++;
+    }
+
+    /**
+     * Validate an expression for unknown function calls
+     */
+    private function validateExpression(string $expression): void
+    {
+        // Find all function calls in the expression
+        // Pattern matches: functionName(
+        preg_match_all('/([a-zA-Z_]\w*)\s*\(/', $expression, $matches);
+
+        if (!empty($matches[1])) {
+            foreach ($matches[1] as $functionName) {
+                // Check if it's a valid function
+                if (!in_array($functionName, self::VALID_FUNCTIONS)) {
+                    throw new \Exception(__('Line :line: Unknown function ":function" in expression. Valid functions are: :valid', [
+                        'line' => $this->currentLineNumber(),
+                        'function' => $functionName,
+                        'valid' => implode(', ', self::VALID_FUNCTIONS)
+                    ]));
+                }
+            }
+        }
     }
 }

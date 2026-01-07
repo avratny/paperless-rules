@@ -74,18 +74,114 @@
                         />
 
                         <!-- Ollama Model -->
-                        <x-forms.text-input
-                            id="ollamaModel"
-                            label="{{ __('Ollama Model') }}"
-                            type="text"
-                            wire-model="ollamaModel"
-                            :wire-live="true"
-                            placeholder="llama3.1"
-                            hint="{{ __('The model to use for AI completions (e.g., llama3.1, mistral, etc.)') }}"
-                        />
+                        <div>
+                            <!-- Label -->
+                            <label for="ollamaModel" class="block text-sm font-medium text-gray-300 mb-2">
+                                {{ __('Ollama Model') }}
+                            </label>
 
-                        <!-- Save Button -->
-                        <div class="flex justify-end">
+                            <div class="flex gap-2">
+                                <div class="flex-grow">
+                                    @if(count($availableModels) > 0)
+                                        <div class="relative">
+                                            <select
+                                                id="ollamaModel"
+                                                wire:model.live="ollamaModel"
+                                                class="w-full pl-4 pr-10 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition appearance-none cursor-pointer"
+                                            >
+                                                <option value="">{{ __('Select a model') }}</option>
+                                                @foreach($availableModels as $model)
+                                                    <option value="{{ $model }}">{{ $model }}</option>
+                                                @endforeach
+                                            </select>
+                                            <!-- Chevron Icon -->
+                                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <input
+                                            id="ollamaModel"
+                                            type="text"
+                                            wire:model.live="ollamaModel"
+                                            placeholder="llama3.1"
+                                            class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                                        />
+                                    @endif
+                                </div>
+
+                                <!-- Load Models Button -->
+                                <button
+                                    type="button"
+                                    wire:click="loadAvailableModels"
+                                    wire:loading.attr="disabled"
+                                    class="px-4 py-3 bg-gray-800/50 hover:bg-gray-800 border border-gray-700 rounded-xl text-gray-300 hover:text-white transition duration-150 flex items-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" wire:loading.remove wire:target="loadAvailableModels">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    </svg>
+                                    <svg class="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" wire:loading wire:target="loadAvailableModels">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    <span wire:loading.remove wire:target="loadAvailableModels">{{ __('Load Models') }}</span>
+                                    <span wire:loading wire:target="loadAvailableModels">{{ __('Loading...') }}</span>
+                                </button>
+                            </div>
+
+                            <!-- Hint -->
+                            <p class="mt-2 text-xs text-gray-500">
+                                @if(count($availableModels) > 0)
+                                    {{ __('The model to use for AI completions') }}
+                                @else
+                                    {{ __('Enter the model name manually or load available models from your Ollama instance') }}
+                                @endif
+                            </p>
+
+                            <!-- Info message when no models are loaded -->
+                            @if(count($availableModels) === 0 && !empty($ollamaUrl))
+                                <div class="mt-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                                    <div class="flex items-start">
+                                        <svg class="w-5 h-5 text-blue-400 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <p class="text-blue-400 text-sm">
+                                            {{ __('Click "Load Models" to fetch available models from your Ollama instance, or enter the model name manually.') }}
+                                        </p>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- Connection Test Result -->
+                        @if ($connectionSuccess !== null)
+                            <div class="p-4 rounded-xl {{ $connectionSuccess ? 'bg-green-500/10 border border-green-500/20' : 'bg-red-500/10 border border-red-500/20' }}">
+                                <div class="flex items-start">
+                                    @if ($connectionSuccess)
+                                        <svg class="w-5 h-5 text-green-400 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        <div>
+                                            <p class="text-green-400 font-medium">{{ __('Connection successful!') }}</p>
+                                            <p class="text-green-400/70 text-sm mt-1">{{ __('Successfully connected to Ollama API') }}</p>
+                                        </div>
+                                    @else
+                                        <svg class="w-5 h-5 text-red-400 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                        <div>
+                                            <p class="text-red-400 font-medium">{{ __('Connection failed') }}</p>
+                                            <p class="text-red-400/70 text-sm mt-1">{{ $connectionError }}</p>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
+
+                        <!-- Action Buttons -->
+                        <div class="flex items-center justify-between">
                             <button
                                 type="button"
                                 wire:click="save"
@@ -101,6 +197,23 @@
                                 </svg>
                                 <span wire:loading.remove wire:target="save">{{ __('Save Settings') }}</span>
                                 <span wire:loading wire:target="save">{{ __('Saving...') }}</span>
+                            </button>
+
+                            <button
+                                type="button"
+                                wire:click="testConnection"
+                                wire:loading.attr="disabled"
+                                class="px-4 py-2 bg-gray-800/50 hover:bg-gray-800 border border-gray-700 rounded-lg text-gray-300 hover:text-white transition duration-150 flex items-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" wire:loading.remove wire:target="testConnection">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <svg class="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" wire:loading wire:target="testConnection">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 714 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span wire:loading.remove wire:target="testConnection">{{ __('Test Connection') }}</span>
+                                <span wire:loading wire:target="testConnection">{{ __('Testing...') }}</span>
                             </button>
                         </div>
                     </div>

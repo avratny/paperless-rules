@@ -3,6 +3,7 @@
 namespace App\Services\Rules;
 
 use App\Services\Paperless\Document;
+use App\Services\SettingsService;
 
 class RuleExecutor
 {
@@ -10,17 +11,13 @@ class RuleExecutor
     private ActionExecutor $actionExecutor;
     private array $limits;
 
-    public function __construct()
+    public function __construct(?SettingsService $settingsService = null)
     {
         $this->expressionEngine = new ExpressionEngine();
         $this->actionExecutor = new ActionExecutor();
 
-        $this->limits = [
-            'max_dsl_length' => config('prules.limits.max_dsl_length', 10000),
-            'max_let_count' => config('prules.limits.max_let_count', 50),
-            'max_do_count' => config('prules.limits.max_do_count', 50),
-            'max_nesting_depth' => config('prules.limits.max_nesting_depth', 10),
-        ];
+        $settingsService = $settingsService ?? app(SettingsService::class);
+        $this->limits = $settingsService->getRuleLimits();
     }
 
     public function execute(array $ast, Document $document, bool $dryRun = false): array

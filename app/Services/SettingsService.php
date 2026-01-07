@@ -90,15 +90,16 @@ class SettingsService
      */
     public function getPaperlessUrl(): string
     {
-        return $this->get('paperless.url', config('prules.paperless.url', 'http://localhost:8010'));
+        return $this->get('paperless.url', 'http://localhost:8010');
     }
 
     /**
      * Get Paperless API Key
+     * Always fetch directly from database to ensure proper decryption
      */
     public function getPaperlessApiKey(): string
     {
-        return $this->get('paperless.api_key', config('prules.paperless.api_key', ''));
+        return Setting::get('paperless.api_key', '');
     }
 
     /**
@@ -275,6 +276,67 @@ class SettingsService
     public function setLoginEnabled(bool $enabled): void
     {
         $this->set('auth.login_enabled', $enabled);
+    }
+
+    /**
+     * Check if setup wizard has been completed
+     */
+    public function isSetupCompleted(): bool
+    {
+        return (bool) $this->get('setup.completed', false);
+    }
+
+    /**
+     * Mark setup wizard as completed
+     */
+    public function markSetupCompleted(): void
+    {
+        $this->set('setup.completed', true);
+    }
+
+    /**
+     * Get maximum DSL length
+     */
+    public function getMaxDslLength(): int
+    {
+        return (int) $this->get('limits.max_dsl_length', 10000);
+    }
+
+    /**
+     * Get maximum LET count
+     */
+    public function getMaxLetCount(): int
+    {
+        return (int) $this->get('limits.max_let_count', 50);
+    }
+
+    /**
+     * Get maximum DO count
+     */
+    public function getMaxDoCount(): int
+    {
+        return (int) $this->get('limits.max_do_count', 50);
+    }
+
+    /**
+     * Get maximum nesting depth
+     */
+    public function getMaxNestingDepth(): int
+    {
+        return (int) $this->get('limits.max_nesting_depth', 10);
+    }
+
+    /**
+     * Get all rule limits
+     */
+    public function getRuleLimits(): array
+    {
+        return [
+            'max_dsl_length' => $this->getMaxDslLength(),
+            'max_let_count' => $this->getMaxLetCount(),
+            'max_do_count' => $this->getMaxDoCount(),
+            'max_nesting_depth' => $this->getMaxNestingDepth(),
+        ];
     }
 }
 

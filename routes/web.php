@@ -3,8 +3,13 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
+// Setup Wizard (not protected by CheckSetupCompleted middleware)
+Route::get('/setup', \App\Livewire\SetupWizard::class)->name('setup.wizard');
+
 // Login routes
-Route::get('/login', \App\Livewire\Login::class)->name('login');
+Route::get('/login', \App\Livewire\Login::class)->name('login')
+    ->middleware(\App\Http\Middleware\CheckSetupCompleted::class);
+
 Route::post('/logout', function () {
     Auth::logout();
     request()->session()->invalidate();
@@ -13,7 +18,10 @@ Route::post('/logout', function () {
 })->name('logout');
 
 // Protected routes
-Route::middleware(\App\Http\Middleware\CheckAuth::class)->group(function () {
+Route::middleware([
+    \App\Http\Middleware\CheckSetupCompleted::class,
+    \App\Http\Middleware\CheckAuth::class
+])->group(function () {
     Route::get('/', function () {
         return view('dashboard');
     });
@@ -32,6 +40,7 @@ Route::middleware(\App\Http\Middleware\CheckAuth::class)->group(function () {
         Route::get('/settings/paperless-api', \App\Livewire\Settings\PaperlessApiSettings::class)->name('settings.paperless-api');
         Route::get('/settings/document-processing', \App\Livewire\Settings\DocumentProcessingSettings::class)->name('settings.document-processing');
         Route::get('/settings/ollama', \App\Livewire\Settings\OllamaSettings::class)->name('settings.ollama');
+        Route::get('/settings/dsl', \App\Livewire\Settings\DslSettings::class)->name('settings.dsl');
         Route::get('/settings/authentication', \App\Livewire\Settings\AuthenticationSettings::class)->name('settings.authentication');
     });
 });
